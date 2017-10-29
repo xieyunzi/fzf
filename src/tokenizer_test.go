@@ -2,6 +2,7 @@ package fzf
 
 import (
 	"testing"
+	"fmt"
 )
 
 func TestParseRange(t *testing.T) {
@@ -58,6 +59,10 @@ func TestTokenize(t *testing.T) {
 
 	// With delimiter regex
 	tokens = Tokenize(input, delimiterRegexp("\\s+"))
+	for _, t := range tokens {
+		fmt.Println("+++" + t.text.ToString() + "+++")
+		fmt.Println(t.prefixLength)
+	}
 	if tokens[0].text.ToString() != "  " || tokens[0].prefixLength != 0 ||
 		tokens[1].text.ToString() != "abc:  " || tokens[1].prefixLength != 2 ||
 		tokens[2].text.ToString() != "def:  " || tokens[2].prefixLength != 8 ||
