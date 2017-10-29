@@ -15,6 +15,7 @@ func TestChunkList(t *testing.T) {
 		item.text = util.ToChars(s)
 		return true
 	})
+	fmt.Println(cl.chunks)
 
 	// Snapshot
 	snapshot, count := cl.Snapshot()
@@ -25,6 +26,16 @@ func TestChunkList(t *testing.T) {
 	// Add some data
 	cl.Push([]byte("hello"))
 	cl.Push([]byte("world"))
+
+	for k, v := range cl.chunks {
+		fmt.Println("[INFO] start")
+		fmt.Println(k)
+		fmt.Println(*v)
+		for k1, v1 := range *v {
+			fmt.Println(k1, v1.AsString(false))
+		}
+		fmt.Println("[INFO] end")
+	}
 
 	// Previously created snapshot should remain the same
 	if len(snapshot) > 0 {
