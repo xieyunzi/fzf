@@ -119,10 +119,11 @@ func Run(opts *Options, revision string) {
 	streamingFilter := opts.Filter != nil && !sort && !opts.Tac && !opts.Sync
 	if !streamingFilter {
 		reader := NewReader(func(data []byte) bool {
-			fmt.Println("------------")
+			fmt.Println("--- start ------------")
 			fmt.Println(data)
 			chars := util.ToChars(data)
 			fmt.Println(chars.ToString())
+			fmt.Println("--- end ------------")
 
 			return chunkList.Push(data)
 		}, eventBox, opts.ReadZero)
