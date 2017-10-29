@@ -117,14 +117,9 @@ func Run(opts *Options, revision string) {
 
 	// Reader
 	streamingFilter := opts.Filter != nil && !sort && !opts.Tac && !opts.Sync
+	fmt.Println("---- streamingFilter: ", streamingFilter)
 	if !streamingFilter {
 		reader := NewReader(func(data []byte) bool {
-			fmt.Println("--- start ------------")
-			fmt.Println(data)
-			chars := util.ToChars(data)
-			fmt.Println(chars.ToString())
-			fmt.Println("--- end ------------")
-
 			return chunkList.Push(data)
 		}, eventBox, opts.ReadZero)
 		go reader.ReadSource()
@@ -157,6 +152,8 @@ func Run(opts *Options, revision string) {
 		pattern := patternBuilder([]rune(*opts.Filter))
 
 		found := false
+		// test streamingFilter
+		// tail -f ~/.shadowsocks/nohup.out | go run main.go -f goog +s
 		if streamingFilter {
 			slab := util.MakeSlab(slab16Size, slab32Size)
 			reader := NewReader(
