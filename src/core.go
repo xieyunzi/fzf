@@ -149,6 +149,7 @@ func Run(opts *Options, revision string) {
 		}
 
 		pattern := patternBuilder([]rune(*opts.Filter))
+		fmt.Println("*opts.Filter: ", *opts.Filter)
 
 		found := false
 		if streamingFilter {
@@ -157,10 +158,26 @@ func Run(opts *Options, revision string) {
 				func(runes []byte) bool {
 					item := Item{}
 					if chunkList.trans(&item, runes) {
-						if result, _, _ := pattern.MatchItem(&item, false, slab); result != nil {
+						fmt.Println("--- start ------------")
+
+						fmt.Println(
+							"--- AsString: ",
+							item.AsString(true),
+							" --- Colors: ",
+							item.Colors(),
+							" --- Index: ",
+							item.Index())
+
+						result, offsets, pos := pattern.MatchItem(&item, false, slab)
+						if result != nil {
+							rc := util.ToChars(runes[offsets[0][0]:offsets[0][1]])
+							fmt.Println("--- match string: ", rc.ToString())
+							fmt.Println("--- MatchItem: ", result.Index(), offsets, pos)
+
 							opts.Printer(item.text.ToString())
 							found = true
 						}
+						fmt.Println("--- end ------------")
 					}
 					return false
 				}, eventBox, opts.ReadZero)
